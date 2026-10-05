@@ -38,13 +38,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Health check para Render y servicios en la nube
 app.get('/healthz', (req, res) => res.status(200).send('OK'));
 
-// Endpoint de versión para verificar actualizaciones
+// Endpoint de versión para verificar actualizaciones automáticas
 app.get('/api/version', (req, res) => {
     res.json({
-        version: '1.1.0',
+        version: '1.2.0',
         appName: 'Auditorio Control',
         renderStatus: 'online',
-        lastCommit: 'latest'
+        hostDownloadUrl: 'https://github.com/Inge-Alejo/control-remoto/raw/main/Auditorio-Host.exe',
+        staffDownloadUrl: 'https://github.com/Inge-Alejo/control-remoto/raw/main/Staff-Control.exe',
+        notes: 'Control nativo de Windows autónomo sin dependencias y soporte de auto-actualizaciones'
     });
 });
 

@@ -48,6 +48,9 @@ namespace AuditorioControl {
         private const byte VK_RETURN = 0x0D;
         private const byte VK_BACK = 0x08;
 
+        private const string CURRENT_VERSION = "1.2.0";
+        private const string VERSION_CHECK_URL = "https://control-remoto-o5f6.onrender.com/api/version";
+
         private static ClientWebSocket wsClient;
         private static CancellationTokenSource cts;
         private static NotifyIcon trayIcon;
@@ -64,13 +67,16 @@ namespace AuditorioControl {
 
             cts = new CancellationTokenSource();
 
-            // 1. Iniciar el bucle de conexión WebSocket nativo en segundo plano
+            // 1. Validar actualizaciones automáticamente en segundo plano
+            Task.Run(() => CheckForUpdates());
+
+            // 2. Iniciar el bucle de conexión WebSocket nativo en segundo plano
             Task.Run(() => WebSocketLoop(cts.Token));
 
-            // 2. Iniciar transmisión periódica ligera de pantalla
+            // 3. Iniciar transmisión periódica ligera de pantalla
             Task.Run(() => ScreenCaptureLoop(cts.Token));
 
-            // 3. Abrir la ventana visual del Auditorio en Edge / Chrome
+            // 4. Abrir la ventana visual del Auditorio en Edge / Chrome
             LaunchHostWindow();
 
             // 4. Configurar icono en la bandeja del sistema (System Tray)
@@ -126,6 +132,29 @@ namespace AuditorioControl {
                     });
                 }
             } catch { }
+        }
+
+        private static void CheckForUpdates() {
+            try {
+                using (System.Net.WebClient client = new System.Net.WebClient()) {
+                    client.Headers.Add("User-Agent", "AuditorioHost");
+                    string json = client.DownloadString(VERSION_CHECK_URL);
+                    string remoteVer = ExtractString(json, "\"version\":");
+                    if (!string.IsNullOrEmpty(remoteVer) && remoteVer != CURRENT_VERSION) {
+                        string notes = ExtractString(json, "\"notes\":");
+                        string msg = "Hay una nueva versión disponible de Auditorio Control (v" + remoteVer + ").\n\n" +
+                                     (string.IsNullOrEmpty(notes) ? "" : "Novedades: " + notes + "\n\n") +
+                                     "¿Deseas descargar la actualización ahora desde GitHub?";
+                        
+                        DialogResult dr = MessageBox.Show(msg, "Actualización Disponible - Auditorio Control", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                        if (dr == DialogResult.Yes) {
+                            Process.Start("https://github.com/Inge-Alejo/control-remoto");
+                        }
+                    }
+                }
+            } catch {
+                // Silencioso si no hay conexión al iniciar
+            }
         }
 
         private static async Task WebSocketLoop(CancellationToken token) {
