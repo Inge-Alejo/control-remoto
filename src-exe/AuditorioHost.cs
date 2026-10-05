@@ -140,20 +140,79 @@ namespace AuditorioControl {
                     client.Headers.Add("User-Agent", "AuditorioHost");
                     string json = client.DownloadString(VERSION_CHECK_URL);
                     string remoteVer = ExtractString(json, "\"version\":");
-                    if (!string.IsNullOrEmpty(remoteVer) && remoteVer != CURRENT_VERSION) {
+                    string downloadUrl = ExtractString(json, "\"hostDownloadUrl\":");
+                    if (string.IsNullOrEmpty(downloadUrl)) {
+                        downloadUrl = "https://github.com/Inge-Alejo/control-remoto/raw/main/Auditorio-Host.exe";
+                    }
+
+                    if (!string.IsNullOrEmpty(remoteVer) && IsNewerVersion(CURRENT_VERSION, remoteVer)) {
                         string notes = ExtractString(json, "\"notes\":");
-                        string msg = "Hay una nueva versión disponible de Auditorio Control (v" + remoteVer + ").\n\n" +
+                        string msg = "¡Nueva versión disponible de Auditorio Control (v" + remoteVer + ")!\n\n" +
                                      (string.IsNullOrEmpty(notes) ? "" : "Novedades: " + notes + "\n\n") +
-                                     "¿Deseas descargar la actualización ahora desde GitHub?";
+                                     "¿Deseas actualizar e instalar automáticamente ahora?\n\n(La aplicación se descargará, reemplazará e iniciará sola en segundos sin necesidad de que hagas descargas manuales)";
                         
-                        DialogResult dr = MessageBox.Show(msg, "Actualización Disponible - Auditorio Control", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                        DialogResult dr = MessageBox.Show(msg, "Actualización Automática - Auditorio Control", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
                         if (dr == DialogResult.Yes) {
-                            Process.Start("https://github.com/Inge-Alejo/control-remoto");
+                            PerformSelfUpdate(downloadUrl, remoteVer);
                         }
                     }
                 }
             } catch {
                 // Silencioso si no hay conexión al iniciar
+            }
+        }
+
+        private static bool IsNewerVersion(string currentVer, string remoteVer) {
+            try {
+                Version cur, rem;
+                if (Version.TryParse(currentVer, out cur) && Version.TryParse(remoteVer, out rem)) {
+                    return rem > cur;
+                }
+                return !string.Equals(currentVer, remoteVer, StringComparison.OrdinalIgnoreCase);
+            } catch {
+                return false;
+            }
+        }
+
+        private static void PerformSelfUpdate(string downloadUrl, string newVersion) {
+            try {
+                if (trayIcon != null) {
+                    trayIcon.ShowBalloonTip(3000, "Actualizando Auditorio Control", "Descargando versión " + newVersion + " y aplicando actualización...", ToolTipIcon.Info);
+                }
+
+                string currentExe = Process.GetCurrentProcess().MainModule.FileName;
+                string tempExe = Path.Combine(Path.GetTempPath(), "AuditorioHost-Update-" + Guid.NewGuid().ToString("N").Substring(0, 6) + ".exe");
+
+                using (System.Net.WebClient dlClient = new System.Net.WebClient()) {
+                    dlClient.Headers.Add("User-Agent", "AuditorioAutoUpdater");
+                    dlClient.DownloadFile(downloadUrl, tempExe);
+                }
+
+                FileInfo fi = new FileInfo(tempExe);
+                if (!fi.Exists || fi.Length < 10000) {
+                    throw new Exception("El archivo descargado no parece un ejecutable válido.");
+                }
+
+                // Esperar a que termine este proceso, reemplazar el archivo e iniciar el nuevo
+                string cmd = string.Format(
+                    "/c chcp 65001 >nul & timeout /t 1 /nobreak >nul & move /y \"{0}\" \"{1}\" >nul & start \"\" \"{1}\"",
+                    tempExe,
+                    currentExe
+                );
+
+                ProcessStartInfo psi = new ProcessStartInfo("cmd.exe", cmd) {
+                    CreateNoWindow = true,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    UseShellExecute = false
+                };
+
+                Process.Start(psi);
+
+                if (cts != null) cts.Cancel();
+                if (trayIcon != null) trayIcon.Visible = false;
+                Environment.Exit(0);
+            } catch (Exception ex) {
+                MessageBox.Show("No se pudo autogestionar la actualización:\n" + ex.Message + "\n\nPuedes descargarla manualmente si persiste el problema.", "Error de Actualización", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 

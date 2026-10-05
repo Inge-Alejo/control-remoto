@@ -121,19 +121,31 @@ namespace AuditorioControl {
 
                 string sourceDir = AppDomain.CurrentDomain.BaseDirectory;
 
-                // Copiar ejecutables y archivos del host si existen
-                string[] filesToCopy = new string[] {
-                    "Auditorio-Host.exe",
-                    "Staff-Control.exe",
-                    "host-bridge.js",
-                    "win-input-worker.ps1"
-                };
+                using (System.Net.WebClient client = new System.Net.WebClient()) {
+                    client.Headers.Add("User-Agent", "AuditorioInstaller");
 
-                foreach (string file in filesToCopy) {
-                    string src = Path.Combine(sourceDir, file);
-                    string dst = Path.Combine(installDir, file);
-                    if (File.Exists(src)) {
-                        File.Copy(src, dst, true);
+                    if (chkHost.Checked) {
+                        lblStatus.Text = "Configurando Auditorio Host...";
+                        string hostDst = Path.Combine(installDir, "Auditorio-Host.exe");
+                        string hostSrc = Path.Combine(sourceDir, "Auditorio-Host.exe");
+                        if (File.Exists(hostSrc)) {
+                            File.Copy(hostSrc, hostDst, true);
+                        } else {
+                            lblStatus.Text = "Descargando Auditorio Host...";
+                            client.DownloadFile("https://github.com/Inge-Alejo/control-remoto/raw/main/Auditorio-Host.exe", hostDst);
+                        }
+                    }
+
+                    if (chkStaff.Checked) {
+                        lblStatus.Text = "Configurando Staff Remote...";
+                        string staffDst = Path.Combine(installDir, "Staff-Control.exe");
+                        string staffSrc = Path.Combine(sourceDir, "Staff-Control.exe");
+                        if (File.Exists(staffSrc)) {
+                            File.Copy(staffSrc, staffDst, true);
+                        } else {
+                            lblStatus.Text = "Descargando Staff Remote...";
+                            client.DownloadFile("https://github.com/Inge-Alejo/control-remoto/raw/main/Staff-Control.exe", staffDst);
+                        }
                     }
                 }
 
