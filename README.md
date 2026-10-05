@@ -40,22 +40,20 @@ Para garantizar conectividad total sin costo, la arquitectura utiliza **Conexion
 
 ---
 
-## 🚀 3. Puesta en Marcha Rápida (Entorno Local)
+## 🚀 3. Ejecutables Nativos (.exe) para los Computadores
 
-Para probarlo ahora mismo en tu equipo:
+En el repositorio encontrarás los ejecutables portátiles listos para usar:
 
-1. **Iniciar el servidor:**
-   ```powershell
-   npm start
-   ```
-2. **Abrir las interfaces:**
-   * **Auditorio (Host):** Abre en tu navegador `http://localhost:3000/host.html` (aquí verás el PIN de 6 dígitos).
-   * **Staff (Control):** Abre en tu móvil o en otra pestaña `http://localhost:3000/staff.html` e introduce el PIN.
-3. *(Opcional)* **Para control nativo del mouse de Windows y PowerPoint:**
-   Abre una segunda terminal en el equipo del auditorio y corre:
-   ```powershell
-   npm run host
-   ```
+### 📦 Opción 1: Instalador Automático (`Instalador-AuditorioControl.exe`)
+Ejecuta el asistente de instalación en cualquier equipo. Te permite:
+* Instalar **Auditorio Host** (Equipo del Proyector) o **Staff Remote** (Cabina).
+* Crear accesos directos elegantes en el **Escritorio** y en el **Menú Inicio de Windows**.
+
+### 💻 Opción 2: Ejecutables Portátiles Directos
+* **`Auditorio-Host.exe`** (Para el computador del escenario / proyector):
+  Con un doble clic, inicia el agente de control y abre la pantalla del Auditorio en una ventana nativa de escritorio dedicada mostrando el PIN.
+* **`Staff-Control.exe`** (Para el computador o laptop del staff en cabina):
+  Con un doble clic, abre directamente el mando de control en una ventana de aplicación independiente (sin pestañas ni barras de navegador).
 
 ---
 
