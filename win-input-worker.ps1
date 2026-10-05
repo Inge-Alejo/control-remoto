@@ -84,6 +84,62 @@ while ($null -ne ($line = $stdin.ReadLine())) {
                     [Win32Input]::keybd_event(0xAD, 0, 2, [UIntPtr]::Zero)
                 }
             }
+            "WIN_D" {
+                if (([System.Management.Automation.PSTypeName]'Win32Input').Type) {
+                    [Win32Input]::keybd_event(0x5B, 0, 0, [UIntPtr]::Zero)
+                    [Win32Input]::keybd_event(0x44, 0, 0, [UIntPtr]::Zero)
+                    [Win32Input]::keybd_event(0x44, 0, 2, [UIntPtr]::Zero)
+                    [Win32Input]::keybd_event(0x5B, 0, 2, [UIntPtr]::Zero)
+                }
+            }
+            "ALT_TAB" {
+                if (([System.Management.Automation.PSTypeName]'Win32Input').Type) {
+                    [Win32Input]::keybd_event(0x12, 0, 0, [UIntPtr]::Zero)
+                    [Win32Input]::keybd_event(0x09, 0, 0, [UIntPtr]::Zero)
+                    [Win32Input]::keybd_event(0x09, 0, 2, [UIntPtr]::Zero)
+                    [Win32Input]::keybd_event(0x12, 0, 2, [UIntPtr]::Zero)
+                }
+            }
+            "ALT_F4" {
+                if (([System.Management.Automation.PSTypeName]'Win32Input').Type) {
+                    [Win32Input]::keybd_event(0x12, 0, 0, [UIntPtr]::Zero)
+                    [Win32Input]::keybd_event(0x73, 0, 0, [UIntPtr]::Zero)
+                    [Win32Input]::keybd_event(0x73, 0, 2, [UIntPtr]::Zero)
+                    [Win32Input]::keybd_event(0x12, 0, 2, [UIntPtr]::Zero)
+                }
+            }
+            "WIN_P" {
+                if (([System.Management.Automation.PSTypeName]'Win32Input').Type) {
+                    [Win32Input]::keybd_event(0x5B, 0, 0, [UIntPtr]::Zero)
+                    [Win32Input]::keybd_event(0x50, 0, 0, [UIntPtr]::Zero)
+                    [Win32Input]::keybd_event(0x50, 0, 2, [UIntPtr]::Zero)
+                    [Win32Input]::keybd_event(0x5B, 0, 2, [UIntPtr]::Zero)
+                }
+            }
+            "F11_FULLSCREEN" {
+                if (([System.Management.Automation.PSTypeName]'Win32Input').Type) {
+                    [Win32Input]::keybd_event(0x7A, 0, 0, [UIntPtr]::Zero)
+                    [Win32Input]::keybd_event(0x7A, 0, 2, [UIntPtr]::Zero)
+                }
+            }
+            "RELOAD_F5" {
+                if (([System.Management.Automation.PSTypeName]'Win32Input').Type) {
+                    [Win32Input]::keybd_event(0x74, 0, 0, [UIntPtr]::Zero)
+                    [Win32Input]::keybd_event(0x74, 0, 2, [UIntPtr]::Zero)
+                }
+            }
+            "PANIC_RESET" {
+                if (([System.Management.Automation.PSTypeName]'Win32Input').Type) {
+                    # Mute
+                    [Win32Input]::keybd_event(0xAD, 0, 0, [UIntPtr]::Zero)
+                    [Win32Input]::keybd_event(0xAD, 0, 2, [UIntPtr]::Zero)
+                    # Win+D (Minimizar todo de inmediato)
+                    [Win32Input]::keybd_event(0x5B, 0, 0, [UIntPtr]::Zero)
+                    [Win32Input]::keybd_event(0x44, 0, 0, [UIntPtr]::Zero)
+                    [Win32Input]::keybd_event(0x44, 0, 2, [UIntPtr]::Zero)
+                    [Win32Input]::keybd_event(0x5B, 0, 2, [UIntPtr]::Zero)
+                }
+            }
             "KEY" {
                 $keyPayload = if ($line.Length -gt 4) { $line.Substring(4) } else { "" }
                 if ($keyPayload.Length -gt 0) {

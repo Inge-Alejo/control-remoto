@@ -226,35 +226,36 @@ function stopPingMeter() {
     pingTag.textContent = '-- ms';
 }
 
-// --- PRESENTATION CONTROLS BINDING ---
-document.getElementById('btnNext').addEventListener('click', () => sendDeckAction('NEXT_SLIDE'));
-document.getElementById('btnPrev').addEventListener('click', () => sendDeckAction('PREV_SLIDE'));
-document.getElementById('btnPlayPause').addEventListener('click', () => sendDeckAction('MEDIA_PLAY_PAUSE'));
-document.getElementById('btnBlackout').addEventListener('click', () => sendDeckAction('BLACKOUT'));
-document.getElementById('btnWhiteout').addEventListener('click', () => sendDeckAction('WHITEOUT'));
-document.getElementById('btnStartF5').addEventListener('click', () => sendDeckAction('START_F5'));
-document.getElementById('btnStopEsc').addEventListener('click', () => sendDeckAction('STOP_ESC'));
+// --- AV CONSOLE & WINDOW CONTROLS BINDING ---
+const bindClick = (id, action) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('click', () => sendDeckAction(action));
+};
 
-document.getElementById('btnVolDown').addEventListener('click', () => sendDeckAction('VOLUME_DOWN'));
-document.getElementById('btnVolUp').addEventListener('click', () => sendDeckAction('VOLUME_UP'));
-document.getElementById('btnMute').addEventListener('click', () => sendDeckAction('VOLUME_MUTE'));
+bindClick('btnPanic', 'PANIC_RESET');
+bindClick('btnShowDesktop', 'SHOW_DESKTOP');
+bindClick('btnAltTab', 'ALT_TAB');
+bindClick('btnCloseWindow', 'CLOSE_WINDOW');
+bindClick('btnProjector', 'PROJECTOR_SWITCH');
+bindClick('btnReload', 'RELOAD_PAGE');
+bindClick('btnFullscreen', 'FULLSCREEN');
 
-// Keyboard navigation on Staff device itself
-window.addEventListener('keydown', (e) => {
-    // Only capture if not typing in text input
-    if (e.target.tagName === 'INPUT') return;
+bindClick('btnVolDown', 'VOLUME_DOWN');
+bindClick('btnVolUp', 'VOLUME_UP');
+bindClick('btnMute', 'VOLUME_MUTE');
 
-    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
-        sendDeckAction('NEXT_SLIDE');
-    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
-        sendDeckAction('PREV_SLIDE');
-    } else if (e.key === 'b' || e.key === 'B') {
-        sendDeckAction('BLACKOUT');
-    } else if (e.key === ' ') {
-        e.preventDefault();
-        sendDeckAction('MEDIA_PLAY_PAUSE');
-    }
-});
+bindClick('btnSeekBack', 'SEEK_BACK');
+bindClick('btnPlayPause', 'MEDIA_PLAY_PAUSE');
+bindClick('btnSeekFwd', 'SEEK_FWD');
+
+// Doble clic botón de soporte
+const btnDoubleTap = document.getElementById('btnDoubleTap');
+if (btnDoubleTap) {
+    btnDoubleTap.addEventListener('click', () => {
+        vibrate(30);
+        sendAction({ type: 'mouse_click', button: 'left', double: true });
+    });
+}
 
 // --- TRACKPAD & TOUCH CONTROLS ---
 let touchStartX = 0;
@@ -364,6 +365,13 @@ document.getElementById('btnKeyEnter').addEventListener('click', () => {
     vibrate(20);
     sendAction({ type: 'key_press', key: '{ENTER}' });
 });
+const btnKeyEsc = document.getElementById('btnKeyEsc');
+if (btnKeyEsc) {
+    btnKeyEsc.addEventListener('click', () => {
+        vibrate(20);
+        sendAction({ type: 'key_press', key: '{ESC}' });
+    });
+}
 document.getElementById('btnKeyBackspace').addEventListener('click', () => {
     vibrate(20);
     sendAction({ type: 'key_press', key: '{BACKSPACE}' });
@@ -371,8 +379,4 @@ document.getElementById('btnKeyBackspace').addEventListener('click', () => {
 document.getElementById('btnKeyTab').addEventListener('click', () => {
     vibrate(20);
     sendAction({ type: 'key_press', key: '{TAB}' });
-});
-document.getElementById('btnKeySpace').addEventListener('click', () => {
-    vibrate(20);
-    sendAction({ type: 'key_press', key: ' ' });
 });

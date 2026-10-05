@@ -170,6 +170,33 @@ function handleDeckAction(action) {
             // Barra espaciadora pausa/reproduce videos o diapositivas
             sendToWorker('KEY {SPACE}');
             break;
+        case 'SHOW_DESKTOP':
+            sendToWorker('WIN_D');
+            break;
+        case 'ALT_TAB':
+            sendToWorker('ALT_TAB');
+            break;
+        case 'CLOSE_WINDOW':
+            sendToWorker('ALT_F4');
+            break;
+        case 'PROJECTOR_SWITCH':
+            sendToWorker('WIN_P');
+            break;
+        case 'FULLSCREEN':
+            sendToWorker('F11_FULLSCREEN');
+            break;
+        case 'RELOAD_PAGE':
+            sendToWorker('RELOAD_F5');
+            break;
+        case 'PANIC_RESET':
+            sendToWorker('PANIC_RESET');
+            break;
+        case 'SEEK_FWD':
+            sendToWorker('KEY {RIGHT}');
+            break;
+        case 'SEEK_BACK':
+            sendToWorker('KEY {LEFT}');
+            break;
         case 'VOLUME_UP':
             sendToWorker('VOL_UP');
             break;
