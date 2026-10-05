@@ -38,6 +38,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Health check para Render y servicios en la nube
 app.get('/healthz', (req, res) => res.status(200).send('OK'));
 
+// Endpoint de versión para verificar actualizaciones
+app.get('/api/version', (req, res) => {
+    res.json({
+        version: '1.1.0',
+        appName: 'Auditorio Control',
+        renderStatus: 'online',
+        lastCommit: 'latest'
+    });
+});
+
 // Estado global de la sesión del auditorio
 const session = {
     pin: generatePin(),
@@ -208,6 +218,12 @@ wss.on('connection', (ws, req) => {
             if (!isAuthenticated) {
                 ws.send(JSON.stringify({ type: 'error', message: 'No autenticado' }));
                 ws.close();
+                return;
+            }
+
+            // Responder ping de latencia
+            if (msg.type === 'ping') {
+                ws.send(JSON.stringify({ type: 'pong' }));
                 return;
             }
 

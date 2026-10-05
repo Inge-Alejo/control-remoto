@@ -171,15 +171,13 @@ function handleDeckAction(action) {
             sendToWorker('KEY {SPACE}');
             break;
         case 'VOLUME_UP':
-            // Simular tecla de volumen arriba multimedia
-            sendToWorker('KEY ^({UP})');
+            sendToWorker('VOL_UP');
             break;
         case 'VOLUME_DOWN':
-            // Simular tecla de volumen abajo multimedia
-            sendToWorker('KEY ^({DOWN})');
+            sendToWorker('VOL_DOWN');
             break;
         case 'VOLUME_MUTE':
-            sendToWorker('KEY m');
+            sendToWorker('VOL_MUTE');
             break;
     }
 }

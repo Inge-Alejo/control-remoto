@@ -66,9 +66,35 @@ while ($null -ne ($line = $stdin.ReadLine())) {
                     }
                 }
             }
+            "VOL_UP" {
+                if (([System.Management.Automation.PSTypeName]'Win32Input').Type) {
+                    [Win32Input]::keybd_event(0xAF, 0, 0, [UIntPtr]::Zero)
+                    [Win32Input]::keybd_event(0xAF, 0, 2, [UIntPtr]::Zero)
+                }
+            }
+            "VOL_DOWN" {
+                if (([System.Management.Automation.PSTypeName]'Win32Input').Type) {
+                    [Win32Input]::keybd_event(0xAE, 0, 0, [UIntPtr]::Zero)
+                    [Win32Input]::keybd_event(0xAE, 0, 2, [UIntPtr]::Zero)
+                }
+            }
+            "VOL_MUTE" {
+                if (([System.Management.Automation.PSTypeName]'Win32Input').Type) {
+                    [Win32Input]::keybd_event(0xAD, 0, 0, [UIntPtr]::Zero)
+                    [Win32Input]::keybd_event(0xAD, 0, 2, [UIntPtr]::Zero)
+                }
+            }
             "KEY" {
-                $keyPayload = $parts[1]
-                [System.Windows.Forms.SendKeys]::SendWait($keyPayload)
+                $keyPayload = if ($line.Length -gt 4) { $line.Substring(4) } else { "" }
+                if ($keyPayload.Length -gt 0) {
+                    if ($keyPayload.StartsWith("{") -and $keyPayload.EndsWith("}")) {
+                        [System.Windows.Forms.SendKeys]::SendWait($keyPayload)
+                    } else {
+                        # Escapar caracteres de control de SendKeys (+, ^, %, ~, (, ))
+                        $escaped = $keyPayload -replace '([+^%~{}()])', '{$1}'
+                        [System.Windows.Forms.SendKeys]::SendWait($escaped)
+                    }
+                }
             }
             "CAPTURE" {
                 # Captura de pantalla para streaming
