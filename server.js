@@ -35,6 +35,9 @@ app.use((req, res, next) => {
 // Servir archivos estáticos del frontend
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Health check para Render y servicios en la nube
+app.get('/healthz', (req, res) => res.status(200).send('OK'));
+
 // Estado global de la sesión del auditorio
 const session = {
     pin: generatePin(),
