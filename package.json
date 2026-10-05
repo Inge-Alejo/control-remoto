@@ -1,0 +1,23 @@
+{
+  "name": "auditorio-control",
+  "version": "1.0.0",
+  "description": "Sistema de Control Remoto Seguro y Gratuito para Auditorios y Eventos",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "host": "node host-bridge.js"
+  },
+  "keywords": [
+    "remote-control",
+    "auditorium",
+    "presentation-clicker",
+    "webrtc",
+    "zero-cost"
+  ],
+  "author": "Antigravity Senior Architecture",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.2",
+    "ws": "^8.18.0"
+  }
+}

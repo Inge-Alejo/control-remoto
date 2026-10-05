@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#080b12">
+    <title>Staff Remote | Control de Auditorio</title>
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/staff.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="staff-header">
+            <div class="logo-area">
+                <div class="logo-icon">🎛️</div>
+                <div>
+                    <h1 class="app-title">Auditorio Control</h1>
+                    <div class="app-subtitle">Área de Staff</div>
+                </div>
+            </div>
+            <div class="status-group">
+                <span class="ping-tag" id="pingTag">-- ms</span>
+                <div class="badge badge-offline" id="hostBadge">
+                    <span class="badge-dot"></span>
+                    <span id="hostStatusText">Host Offline</span>
+                </div>
+                <button class="btn btn-secondary" id="btnLock" style="padding: 6px 10px; font-size: 0.8rem;" title="Bloquear sesión">🔒</button>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <button class="tab-btn active" data-tab="deck">🎬 Diapositivas</button>
+            <button class="tab-btn" data-tab="trackpad">🖱️ Pantalla & Mouse</button>
+            <button class="tab-btn" data-tab="keyboard">⌨️ Teclas</button>
+        </nav>
+
+        <!-- Tab 1: Presentation Deck -->
+        <main class="tab-content">
+            <section class="view-panel active" id="panel-deck">
+                <div class="deck-grid">
+                    <!-- Botón Principal: Siguiente Diapositiva -->
+                    <button class="deck-btn deck-btn-next" id="btnNext">
+                        <span class="deck-btn-icon">⏩</span>
+                        <span class="deck-btn-label">AVANZAR DIAPOSITIVA</span>
+                        <span class="deck-btn-hint">Flecha Derecha / Page Down</span>
+                    </button>
+
+                    <!-- Botón Anterior -->
+                    <button class="deck-btn" id="btnPrev">
+                        <span class="deck-btn-icon">⏪</span>
+                        <span class="deck-btn-label">RETROCEDER</span>
+                        <span class="deck-btn-hint">Flecha Izquierda</span>
+                    </button>
+
+                    <!-- Botón Play/Pausa -->
+                    <button class="deck-btn" id="btnPlayPause">
+                        <span class="deck-btn-icon">⏯️</span>
+                        <span class="deck-btn-label">PLAY / PAUSA</span>
+                        <span class="deck-btn-hint">Espacio (Video)</span>
+                    </button>
+
+                    <!-- Pantalla Negra (B) -->
+                    <button class="deck-btn deck-btn-panic" id="btnBlackout">
+                        <span class="deck-btn-icon">⬛</span>
+                        <span class="deck-btn-label">PANTALLA NEGRA</span>
+                        <span class="deck-btn-hint">Tecla B (PowerPoint)</span>
+                    </button>
+
+                    <!-- Pantalla Blanca (W) -->
+                    <button class="deck-btn" id="btnWhiteout">
+                        <span class="deck-btn-icon">⬜</span>
+                        <span class="deck-btn-label">PANTALLA BLANCA</span>
+                        <span class="deck-btn-hint">Tecla W</span>
+                    </button>
+
+                    <!-- Iniciar Presentación -->
+                    <button class="deck-btn" id="btnStartF5">
+                        <span class="deck-btn-icon">▶️</span>
+                        <span class="deck-btn-label">INICIAR F5</span>
+                        <span class="deck-btn-hint">Pantalla Completa</span>
+                    </button>
+
+                    <!-- Salir de Presentación -->
+                    <button class="deck-btn" id="btnStopEsc">
+                        <span class="deck-btn-icon">⏹️</span>
+                        <span class="deck-btn-label">SALIR (ESC)</span>
+                        <span class="deck-btn-hint">Escape</span>
+                    </button>
+                </div>
+
+                <!-- Barra de Audio -->
+                <div class="media-bar">
+                    <button class="media-btn" id="btnVolDown">🔉 Vol -</button>
+                    <button class="media-btn" id="btnVolUp">🔊 Vol +</button>
+                    <button class="media-btn" id="btnMute">🔇 Mute</button>
+                </div>
+            </section>
+
+            <!-- Tab 2: Trackpad & Live Screen View -->
+            <section class="view-panel" id="panel-trackpad">
+                <!-- Live Screen Mirror -->
+                <div class="screen-preview-container" id="screenContainer">
+                    <img id="screenCanvas" class="screen-canvas" alt="Pantalla Auditorio" style="display:none;">
+                    <div class="screen-placeholder" id="screenPlaceholder">
+                        <span style="font-size: 1.8rem;">🖥️</span>
+                        <span id="screenPlaceholderText">Esperando transmisión de pantalla del Host...</span>
+                    </div>
+                </div>
+
+                <!-- Touchpad Area -->
+                <div class="trackpad-area" id="trackpadArea">
+                    <span style="font-size: 2rem; opacity: 0.3;">👆</span>
+                    <p class="trackpad-hint">Desliza para mover el mouse en el auditorio</p>
+                    <p class="trackpad-hint" style="font-size: 0.72rem;">Toque = Clic | 2 Dedos = Clic Derecho</p>
+                </div>
+
+                <!-- Physical Click Buttons for Accuracy -->
+                <div class="trackpad-buttons">
+                    <button class="tp-click-btn" id="btnLeftClick">🖱️ Clic Izquierdo</button>
+                    <button class="tp-click-btn" id="btnRightClick">Clic Derecho</button>
+                </div>
+            </section>
+
+            <!-- Tab 3: Keyboard & Text Macros -->
+            <section class="view-panel" id="panel-keyboard">
+                <div class="glass-card" style="padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+                    <h3 style="font-size: 1rem; color: var(--accent-cyan);">Enviar Texto al Computador</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary);">
+                        Escribe aquí para buscar un video en YouTube, abrir una URL o escribir en el PC del escenario.
+                    </p>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="textInput" placeholder="Escribe el texto a enviar..." 
+                               style="flex: 1; padding: 12px; border-radius: var(--radius-md); background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); color: #fff; outline: none; font-size: 0.95rem;">
+                        <button class="btn btn-primary" id="btnSendText">Enviar</button>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                        <button class="btn btn-secondary" id="btnKeyEnter">↵ Enter</button>
+                        <button class="btn btn-secondary" id="btnKeyBackspace">⌫ Borrar</button>
+                        <button class="btn btn-secondary" id="btnKeyTab">⇥ Tab</button>
+                        <button class="btn btn-secondary" id="btnKeySpace">␣ Espacio</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Security PIN Modal -->
+    <div class="modal-overlay" id="pinModal">
+        <div class="glass-card pin-card" id="pinCard">
+            <div class="pin-icon-wrap">🔒</div>
+            <h2 style="font-size: 1.25rem; font-weight: 700;">Acceso de Staff</h2>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">
+                Ingresa el PIN de seguridad de 6 dígitos que aparece en la pantalla del Auditorio.
+            </p>
+            <input type="tel" id="pinInput" class="pin-input" maxlength="6" placeholder="000000" autocomplete="off" autofocus>
+            <div class="pin-error" id="pinError"></div>
+            <button class="btn btn-primary" id="btnSubmitPin" style="width: 100%;">Ingresar al Control</button>
+        </div>
+    </div>
+
+    <script src="js/staff.js"></script>
+</body>
+</html>

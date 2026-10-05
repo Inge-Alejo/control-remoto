@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Host | Equipo del Auditorio</title>
+    <link rel="stylesheet" href="css/theme.css">
+    <style>
+        .host-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .pin-display-card {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.8));
+            border: 2px solid var(--accent-cyan);
+            box-shadow: 0 0 40px rgba(6, 182, 212, 0.2);
+            text-align: center;
+            padding: 36px 20px;
+        }
+
+        .pin-number {
+            font-family: var(--font-mono);
+            font-size: 4.5rem;
+            font-weight: 800;
+            letter-spacing: 0.25em;
+            color: var(--accent-cyan);
+            text-shadow: 0 0 30px var(--accent-cyan-glow);
+            margin: 16px 0;
+        }
+
+        .host-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        @media (max-width: 640px) {
+            .host-grid {
+                grid-template-columns: 1fr;
+            }
+            .pin-number {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="host-container">
+        <!-- Top bar -->
+        <header style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <span style="font-size: 2rem;">🖥️</span>
+                <div>
+                    <h1 style="font-size: 1.4rem; font-weight: 700;">Auditorio Host Portal</h1>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Equipo del Escenario / Proyector</p>
+                </div>
+            </div>
+            <div class="badge badge-online" id="statusBadge">
+                <span class="badge-dot"></span>
+                <span id="statusText">Servidor Listo</span>
+            </div>
+        </header>
+
+        <!-- Big PIN Card for Staff in the Room -->
+        <div class="glass-card pin-display-card">
+            <span class="badge" style="background: rgba(6, 182, 212, 0.15); border-color: rgba(6, 182, 212, 0.3); color: var(--accent-cyan);">
+                PIN DE EMPAREJAMIENTO SEGURO
+            </span>
+            <div class="pin-number" id="displayPin">------</div>
+            <p style="color: var(--text-secondary); font-size: 0.95rem;">
+                Comparte este PIN únicamente con el personal de cabina o staff para habilitar el control remoto.
+            </p>
+            <div style="margin-top: 18px; display: flex; justify-content: center; gap: 12px;">
+                <button class="btn btn-secondary" id="btnRefreshPin">🔄 Regenerar PIN</button>
+            </div>
+        </div>
+
+        <!-- Action Cards Grid -->
+        <div class="host-grid">
+            <!-- Screen Sharing via Browser -->
+            <div class="glass-card" style="padding: 24px; display: flex; flex-direction: column; gap: 14px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 1.4rem;">📹</span>
+                    <h3 style="font-size: 1.1rem; font-weight: 700;">Transmisión Web</h3>
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); flex: 1;">
+                    Transmite la pantalla completa o la ventana de PowerPoint/Keynote al Staff directamente desde el navegador (Cero instalaciones).
+                </p>
+                <button class="btn btn-primary" id="btnShareScreen">
+                    ▶️ Compartir Pantalla
+                </button>
+                <div id="shareStatus" style="font-size: 0.8rem; color: var(--text-muted); text-align: center;">
+                    Pantalla inactiva
+                </div>
+            </div>
+
+            <!-- Native Bridge Agent Information -->
+            <div class="glass-card" style="padding: 24px; display: flex; flex-direction: column; gap: 14px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 1.4rem;">⚡</span>
+                    <h3 style="font-size: 1.1rem; font-weight: 700;">Control Nativo del SO</h3>
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); flex: 1;">
+                    Para controlar el mouse de Windows y cambiar diapositivas de PowerPoint fuera del navegador, ejecuta en la terminal del PC:
+                </p>
+                <code style="font-family: var(--font-mono); font-size: 0.8rem; background: rgba(0,0,0,0.4); padding: 8px 12px; border-radius: var(--radius-sm); color: var(--accent-cyan); word-break: break-all;">
+                    node host-bridge.js
+                </code>
+                <div style="font-size: 0.8rem; color: var(--text-emerald); display: flex; align-items: center; gap: 6px;">
+                    <span>🛡️</span> Cero instalación externa (usa PowerShell nativo).
+                </div>
+            </div>
+        </div>
+
+        <!-- Connected Staff Status -->
+        <div class="glass-card" style="padding: 20px; display: flex; align-items: center; justify-content: space-between;">
+            <div>
+                <span style="font-size: 0.85rem; color: var(--text-muted);">Personal Conectado</span>
+                <div style="font-size: 1.3rem; font-weight: 700; color: var(--text-primary);" id="staffCountDisplay">
+                    0 dispositivos de staff
+                </div>
+            </div>
+            <a href="staff.html" target="_blank" class="btn btn-secondary" style="font-size: 0.85rem;">
+                📱 Probar Vista de Staff
+            </a>
+        </div>
+    </div>
+
+    <script src="js/host.js"></script>
+</body>
+</html>

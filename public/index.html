@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auditorio Control | Sistema Remoto Profesional</title>
+    <link rel="stylesheet" href="css/theme.css">
+    <style>
+        .landing-container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 36px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: rgba(6, 182, 212, 0.1);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: var(--radius-full);
+            color: var(--accent-cyan);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #ffffff 40%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-desc {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+        }
+
+        .roles-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .role-card {
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            transition: transform var(--transition-fast), border-color var(--transition-fast);
+        }
+
+        .role-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-glass-bright);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+        }
+
+        .feature-box {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        @media (max-width: 640px) {
+            .roles-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="landing-container">
+        <!-- Hero Section -->
+        <header class="hero">
+            <div class="hero-badge">
+                <span>🛡️</span> Bypass de Firewalls Universitarios & Cero Costo
+            </div>
+            <h1 class="hero-title">Control Remoto para Auditorios & Eventos</h1>
+            <p class="hero-desc">
+                Solución P2P/WSS por puerto 443 seguro. Controla diapositivas, audio y el cursor desde la cabina o el área de staff sin bloqueos de red.
+            </p>
+        </header>
+
+        <!-- Access Choice Grid -->
+        <div class="roles-grid">
+            <!-- Staff Card -->
+            <div class="glass-card role-card" style="border-top: 3px solid var(--accent-cyan);">
+                <div style="font-size: 2.2rem;">📱</div>
+                <h2 style="font-size: 1.4rem; font-weight: 700;">Área de Staff (Tú)</h2>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; flex: 1;">
+                    Abre el control remoto en tu teléfono, tablet o laptop. Pasa diapositivas, silencia videos o maneja el mouse táctil con PIN de seguridad.
+                </p>
+                <a href="staff.html" class="btn btn-primary" style="text-decoration: none;">
+                    🚀 Entrar al Control de Staff
+                </a>
+            </div>
+
+            <!-- Host Card -->
+            <div class="glass-card role-card" style="border-top: 3px solid var(--accent-purple);">
+                <div style="font-size: 2.2rem;">🖥️</div>
+                <h2 style="font-size: 1.4rem; font-weight: 700;">Equipo del Auditorio</h2>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; flex: 1;">
+                    Abre este portal en el computador conectado al proyector para ver el PIN de sesión y transmitir la pantalla en vivo sin instalar programas.
+                </p>
+                <a href="host.html" class="btn btn-secondary" style="text-decoration: none;">
+                    🖥️ Abrir Portal del Auditorio
+                </a>
+            </div>
+        </div>
+
+        <!-- Security & Architecture Highlights -->
+        <section class="features-grid">
+            <div class="glass-card feature-box">
+                <span style="font-size: 1.4rem;">🔒</span>
+                <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--accent-cyan);">Seguridad Criptográfica</h3>
+                <p style="font-size: 0.8rem; color: var(--text-secondary);">
+                    PIN rotativo de 6 dígitos, tokens firmados con HMAC-SHA256 y protección anti-fuerza bruta con bloqueo automático.
+                </p>
+            </div>
+
+            <div class="glass-card feature-box">
+                <span style="font-size: 1.4rem;">🌐</span>
+                <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--accent-emerald);">Inmune a Firewalls</h3>
+                <p style="font-size: 0.8rem; color: var(--text-secondary);">
+                    Encapsulado en WebSockets seguros (WSS) sobre el puerto HTTPS 443 saliente. El firewall no lo distingue de navegación web.
+                </p>
+            </div>
+
+            <div class="glass-card feature-box">
+                <span style="font-size: 1.4rem;">⚡</span>
+                <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--accent-purple);">Baja Latencia</h3>
+                <p style="font-size: 0.8rem; color: var(--text-secondary);">
+                    Diseñado para respuesta táctil instantánea con haptics y monitor de ping en tiempo real (<50ms).
+                </p>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
