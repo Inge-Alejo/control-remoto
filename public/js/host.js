@@ -60,16 +60,27 @@ function updateStaffCount(count) {
 // Regenerar PIN
 btnRefreshPin.addEventListener('click', async () => {
     btnRefreshPin.disabled = true;
+    btnRefreshPin.textContent = 'Generando...';
+
+    // 1. Enviar vía WebSocket (instantáneo)
+    if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ type: 'regenerate_pin' }));
+    }
+
+    // 2. Respaldo vía HTTP POST
     try {
         const res = await fetch('/api/host/new-pin', { method: 'POST' });
         const data = await res.json();
-        if (data.success) {
+        if (data.success && data.pin) {
             displayPin.textContent = data.pin;
         }
     } catch (e) {
-        alert('Error al regenerar PIN');
+        // El WebSocket actualizará displayPin
     } finally {
-        btnRefreshPin.disabled = false;
+        setTimeout(() => {
+            btnRefreshPin.disabled = false;
+            btnRefreshPin.textContent = '🔄 Regenerar PIN';
+        }, 500);
     }
 });
 

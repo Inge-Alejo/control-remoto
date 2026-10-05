@@ -137,15 +137,8 @@ app.get('/api/status', (req, res) => {
 });
 
 // Endpoint administrativo para el Host local para ver/regenerar PIN
+// Endpoint administrativo para regenerar PIN
 app.post('/api/host/new-pin', (req, res) => {
-    // Solo permitido si viene de localhost o con token válido
-    const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-    const isLocal = clientIp === '127.0.0.1' || clientIp === '::1' || clientIp === '::ffff:127.0.0.1';
-    
-    if (!isLocal) {
-        return res.status(403).json({ error: 'Acción solo permitida desde la máquina anfitriona' });
-    }
-
     session.pin = generatePin();
     // Desconectar a los staff actuales para que reingresen el nuevo PIN
     for (const ws of session.staffSockets) {
@@ -186,6 +179,22 @@ wss.on('connection', (ws, req) => {
                 }));
                 broadcastToStaff({ type: 'host_status', connected: true });
                 console.log(`[HOST] Host del auditorio conectado.`);
+                return;
+            }
+
+            if (msg.type === 'regenerate_pin') {
+                session.pin = generatePin();
+                for (const client of session.staffSockets) {
+                    client.send(JSON.stringify({ type: 'session_reset', message: 'El PIN de seguridad fue cambiado por el Host' }));
+                    client.close();
+                }
+                session.staffSockets.clear();
+                console.log(`[SEGURIDAD] Nuevo PIN generado: ${session.pin}`);
+                ws.send(JSON.stringify({
+                    type: 'host_registered',
+                    pin: session.pin,
+                    staffCount: 0
+                }));
                 return;
             }
 
